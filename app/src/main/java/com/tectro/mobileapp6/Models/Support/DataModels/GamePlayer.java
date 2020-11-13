@@ -17,6 +17,7 @@ public class GamePlayer {
     Random rand = new Random();
 
     public GamePlayer(GameModel parent) {
+        canMakeChoice = false;
         Heroes = new ArrayList<>();
         Shields = 0;
         this.parent = parent;
@@ -32,15 +33,37 @@ public class GamePlayer {
     }
 
     public void MakeChoice(int heroId) {
-        if (heroId > 0 && heroId < Heroes.size())
-            chosenSituation = new choice(Heroes.get(heroId), false);
+        if (canMakeChoice) {
+            if (heroId > 0 && heroId < Heroes.size())
+                chosenSituation = new choice(Heroes.get(heroId), false);
+            isWaiting = true;
+        }
     }
 
     public void MakeChoice(boolean shield) {
-        if (shield && Shields > 0) {
-            chosenSituation = new choice(null, true);
-            Shields--;
+        if (canMakeChoice) {
+            if (shield && Shields > 0) {
+                chosenSituation = new choice(null, true);
+                Shields--;
+            }
+            isWaiting = true;
         }
+    }
+
+    public void UnlockChoice() {
+        canMakeChoice = true;
+    }
+
+    public void LockChoice() {
+        canMakeChoice = false;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+    public void stopWaiting() {
+        isWaiting = false;
     }
 
     public choice getChosenSituation() {
@@ -52,7 +75,10 @@ public class GamePlayer {
     //endregion
     private ArrayList<Hero> Heroes;
     private int Shields;
+
+    private boolean canMakeChoice;
     private choice chosenSituation;
+    private boolean isWaiting = false;
 
     public void AddHero() {
         Difficulty difficulty = parent.getGameDifficulty();
