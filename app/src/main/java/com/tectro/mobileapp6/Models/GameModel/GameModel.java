@@ -95,23 +95,28 @@ public class GameModel {
     private void HandleEnemySpawn(AtomicBoolean winningState) {
         EntityClass Enemy = ClassManager.getByRandom(rand, EEntityType.Enemy);
 
-        uProvider.Invoke(EEntityType.Enemy.name(), Enemy);
+        uProvider.Invoke(NotifyNames.Enemy, Enemy);
 
-        Player.UnlockChoice();
-        notifyWhenLooping(
-                elapsedTime -> elapsedTime < GameDifficulty.getPlayerWaitingTime().asNanos(), null,
-                elapsedTime -> uProvider.Invoke("PlayerChoiceWaitTime", GameDifficulty.getPlayerWaitingTime().asNanos() - elapsedTime)
-        );
-       // SystemClock.sleep(GameDifficulty.getPlayerWaitingTime().asMillis());
-        Player.LockChoice();
+        Player.getLockers((lock,unlock)->
+        {
+            unlock.run();
+
+            notifyWhenLooping(
+                    elapsedTime -> elapsedTime < GameDifficulty.getPlayerWaitingTime().asNanos(), null,
+                    elapsedTime -> uProvider.Invoke(NotifyNames.PlayerChoiceWaitTime/*"PlayerChoiceWaitTime"*/, GameDifficulty.getPlayerWaitingTime().asNanos() - elapsedTime)
+            );
+
+            lock.run();
+        });
+
         GamePlayer.choice choice = Player.getChosenSituation();
 
         if (choice != null) {
             if (!choice.isShield()) {
-                //todo end fight
+                //end fight
                 if (choice.getChosenHero().getHClass().compareTo(Enemy) == -1) {
                     Player.getHeroes(t -> t.remove(choice.getChosenHero()));
-                    uProvider.Invoke("CollectionChanged", null);
+                    uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, null);
                 }
             }
         } else {
@@ -124,15 +129,15 @@ public class GameModel {
                 else
                     winningState.set(false);
             });
-            uProvider.Invoke("CollectionChanged", null);
+            uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, null);
         }
 
         notifyWhenLooping(
                 s -> Player.isWaiting(), null,
-                elapsedTime -> uProvider.Invoke("PlayerWaitTime", elapsedTime)
+                elapsedTime -> uProvider.Invoke(NotifyNames.PlayerWaitTime/*"PlayerWaitTime"*/, elapsedTime)
         );
 
-        uProvider.Invoke(EEntityType.Enemy.name(), null);
+        uProvider.Invoke(NotifyNames.Enemy/*EEntityType.Enemy.name()*/, null);
     }
     //endregion
 
@@ -170,15 +175,18 @@ public class GameModel {
                             canEnemyHandle.set(false);
                             HandleEnemySpawn(winningState);
                         }
-                        uProvider.Invoke("TotalElapsedTime", GameDifficulty.getTotalTime().asNanos() - ElapsedTime);
+                        uProvider.Invoke(NotifyNames.TotalElapsedTime/*"TotalElapsedTime"*/, GameDifficulty.getTotalTime().asNanos() - ElapsedTime);
                     }
             );
 
             if (isGameActive.get())
-                uProvider.Invoke("winningState", winningState.get());
+                uProvider.Invoke(NotifyNames.winningState/*"winningState"*/, winningState.get());
         });
 
         isGameActive.set(true);
         ActiveGameThread.start();
     }
+
+
 }
+

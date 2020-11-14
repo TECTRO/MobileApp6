@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tectro.mobileapp6.Models.GameModel.GameModel;
+import com.tectro.mobileapp6.Models.GameModel.NotifyNames;
 import com.tectro.mobileapp6.Models.Support.DataModels.GameClasses.ClassManager;
 import com.tectro.mobileapp6.Models.Support.DataModels.GameClasses.EntityClass;
 import com.tectro.mobileapp6.Models.Support.DataModels.GamePlayer;
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         model.getPlayer().AddHero();
         model.setGameDifficulty(EDifficulty.hell_point);
         model.startGame();
-        //model.startGame(this::updateClock, this::ShowEnemy, this::NotifyCollection, this::isWin);
     }
 
     public void pushPlayer(View view) {
@@ -107,12 +107,12 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (key)
         {
-            case "CollectionChanged": NotifyCollection(); break;
-            case "Enemy": ShowEnemy((EntityClass) value); break;
-            case "PlayerChoiceWaitTime":
-            case "PlayerWaitTime":
-            case "TotalElapsedTime": updateClock((long) value);break;
-            case "winningState": isWin((boolean)value);break;
+            case NotifyNames.CollectionChanged:  NotifyCollection(); break;
+            case NotifyNames.Enemy: ShowEnemy((EntityClass) value); break;
+            case NotifyNames.PlayerChoiceWaitTime:
+            case NotifyNames.PlayerWaitTime:
+            case NotifyNames.TotalElapsedTime: updateClock((long) value);break;
+            case NotifyNames.winningState: isWin((boolean)value);break;
         }
     }
 }

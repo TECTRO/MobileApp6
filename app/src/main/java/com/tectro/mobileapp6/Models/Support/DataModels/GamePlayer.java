@@ -10,6 +10,9 @@ import com.tectro.mobileapp6.Models.Support.Interfaces.ICollectionProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GamePlayer {
 
@@ -26,6 +29,10 @@ public class GamePlayer {
     //region Accessors
     public void getHeroes(ICollectionProvider<List<Hero>> provider) {
         provider.setCollection(Heroes);
+    }
+    public void getLockers(BiConsumer<Runnable,Runnable> functor)
+    {
+        functor.accept(this::LockChoice,this::UnlockChoice);
     }
 
     public int getShields() {
@@ -50,11 +57,11 @@ public class GamePlayer {
         }
     }
 
-    public void UnlockChoice() {
+    private void UnlockChoice() {
         canMakeChoice = true;
     }
 
-    public void LockChoice() {
+    private void LockChoice() {
         canMakeChoice = false;
     }
 
