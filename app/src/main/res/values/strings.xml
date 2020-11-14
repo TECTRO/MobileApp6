@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MobileApp6</string>
+    <string name="соберите_свою_команду">Соберите свою комманду</string>
+    <string name="слабости">слабости:</string>
+    <string name="Оставшееся_время">Оставшееся время:</string>
+    <string name="Вас_атакует">Вас атакует</string>
+    <string name="срочно_выбетите_защитника_отряда">Срочно выбетите защитника отряда!!!</string>
 </resources>

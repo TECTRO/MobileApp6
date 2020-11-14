@@ -20,7 +20,8 @@ public class ClassManager {
     }
 
     private static void Initialise(int seed) {
-        EntityClasses = new ArrayList<>(Arrays.asList(
+        EntityClasses = new ArrayList<>();
+        EntityClasses.addAll(Arrays.asList(
                 new EntityClass(EntityClasses, EEntityNames.бард, EEntityType.Hero),
                 new EntityClass(EntityClasses, EEntityNames.варвар, EEntityType.Hero),
                 new EntityClass(EntityClasses, EEntityNames.воин, EEntityType.Hero),
@@ -40,7 +41,7 @@ public class ClassManager {
                 new EntityClass(EntityClasses, EEntityNames.Наблюдатель, EEntityType.Enemy),
                 new EntityClass(EntityClasses, EEntityNames.Мумия, EEntityType.Enemy),
                 new EntityClass(EntityClasses, EEntityNames.Тролль, EEntityType.Enemy)
-        )) ;
+        ));
 
         Random rend = new Random(seed);
 

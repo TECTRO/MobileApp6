@@ -9,14 +9,17 @@ import com.tectro.mobileapp6.Models.Support.DataModels.Difficulty.TimeUnit;
 import com.tectro.mobileapp6.Models.Support.DataModels.GameClasses.ClassManager;
 import com.tectro.mobileapp6.Models.Support.DataModels.GameClasses.EntityClass;
 import com.tectro.mobileapp6.Models.Support.DataModels.GamePlayer;
+import com.tectro.mobileapp6.Models.Support.DataModels.Hero;
 import com.tectro.mobileapp6.Models.Support.DataModels.UpdateProvider.UpdateProvider;
 import com.tectro.mobileapp6.Models.Support.Enums.EDifficulty;
 import com.tectro.mobileapp6.Models.Support.Enums.EEntityType;
+import com.tectro.mobileapp6.Models.Support.Enums.EFightResult;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,6 +31,11 @@ public class GameModel {
     public static GameModel CreateInstance(Context context) {
         if (current == null) current = new GameModel(EDifficulty.normal);
         current.uProvider = new UpdateProvider(context);
+        return current;
+    }
+
+    public static GameModel CreateInstance() {
+        if (current == null) current = new GameModel(EDifficulty.normal);
         return current;
     }
 
@@ -115,21 +123,33 @@ public class GameModel {
             if (!choice.isShield()) {
                 //end fight
                 if (choice.getChosenHero().getHClass().compareTo(Enemy) == -1) {
-                    Player.getHeroes(t -> t.remove(choice.getChosenHero()));
-                    uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, null);
-                }
-            }
+
+                    AtomicInteger chosenPos = new AtomicInteger();
+                    Player.getHeroes(t -> {
+                        Hero chosen = choice.getChosenHero();
+                        chosenPos.set(t.indexOf(chosen));
+                        t.remove(chosen);
+                    });
+
+                    uProvider.Invoke(NotifyNames.FightResult, EFightResult.HeroLose);
+                    uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, chosenPos.get());
+                }else
+                    uProvider.Invoke(NotifyNames.FightResult, EFightResult.HeroWin);
+            }else
+                uProvider.Invoke(NotifyNames.FightResult, EFightResult.UsedShield);
+
         } else {
             Player.getHeroes(t ->
             {
-                if (t.size() > 1)
-                {
+                if (t.size() > 1) {
                     t.remove(0);
-                }
-                else
+                    uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, 0);
+                } else if (t.size() > 0) {
+                    t.remove(0);
                     winningState.set(false);
+                    uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, 0);
+                }
             });
-            uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, null);
         }
 
         notifyWhenLooping(

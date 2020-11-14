@@ -11,11 +11,11 @@ public class DifficultyManager {
             case easy:
                 return new Difficulty(20 * 1000, 4 * 1000, 4 * 1000, (byte) 40, 7, 3);
             default://normal
-                return new Difficulty(30 * 1000, 3 * 1000, 1 * 1000, (byte) 50, 6, 3);
+                return new Difficulty(30 * 1000, 3 * 1000, (long) (1.5 * 1000), (byte) 50, 6, 3);
             case hard:
-                return new Difficulty(40 * 1000, 3 * 1000, 3 * 1000, (byte) 65, 5, 2);
+                return new Difficulty(40 * 1000, 3 * 1000, 1 * 1000, (byte) 65, 5, 2);
             case hell_point:
-                return new Difficulty(60 * 1000, 3 * 1000, 2 * 1000, (byte) 90, 4, 1);
+                return new Difficulty(60 * 1000, 3 * 1000, 1 * 1000, (byte) 90, 4, 1);
         }
 
     }

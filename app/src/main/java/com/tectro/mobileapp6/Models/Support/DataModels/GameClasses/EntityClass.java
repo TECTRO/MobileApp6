@@ -55,9 +55,9 @@ public class EntityClass implements Comparable<EntityClass> {
     @Override
     public int compareTo(EntityClass entityClass) {
         if(Weaknesses.contains(entityClass))
-            return 1;
-        if(entityClass.Weaknesses.contains(this))
             return -1;
+        if(entityClass.Weaknesses.contains(this))
+            return 1;
         return 0;
     }
 }
