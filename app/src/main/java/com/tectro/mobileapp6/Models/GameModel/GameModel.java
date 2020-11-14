@@ -120,6 +120,8 @@ public class GameModel {
         GamePlayer.choice choice = Player.getChosenSituation();
 
         if (choice != null) {
+            EFightResult fightResult;
+
             if (!choice.isShield()) {
                 //end fight
                 if (choice.getChosenHero().getHClass().compareTo(Enemy) == -1) {
@@ -130,13 +132,15 @@ public class GameModel {
                         chosenPos.set(t.indexOf(chosen));
                         t.remove(chosen);
                     });
+                    fightResult = EFightResult.HeroLose;
 
-                    uProvider.Invoke(NotifyNames.FightResult, EFightResult.HeroLose);
                     uProvider.Invoke(NotifyNames.CollectionChanged/*"CollectionChanged"*/, chosenPos.get());
-                }else
-                    uProvider.Invoke(NotifyNames.FightResult, EFightResult.HeroWin);
-            }else
-                uProvider.Invoke(NotifyNames.FightResult, EFightResult.UsedShield);
+                } else
+                    fightResult = EFightResult.HeroWin;
+            } else
+                fightResult = EFightResult.UsedShield;
+
+            uProvider.Invoke(NotifyNames.FightResult, fightResult);
 
         } else {
             Player.getHeroes(t ->
