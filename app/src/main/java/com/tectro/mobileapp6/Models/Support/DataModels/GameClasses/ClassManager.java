@@ -1,5 +1,7 @@
 package com.tectro.mobileapp6.Models.Support.DataModels.GameClasses;
 
+import android.widget.LinearLayout;
+
 import com.tectro.mobileapp6.Models.Support.DataModels.GameClasses.EntityClass;
 import com.tectro.mobileapp6.Models.Support.Enums.EEntityNames;
 import com.tectro.mobileapp6.Models.Support.Enums.EEntityType;
@@ -46,10 +48,17 @@ public class ClassManager {
         Random rend = new Random(seed);
 
         for (EntityClass entity : EntityClasses) {
-            int weaknessesCount = rend.nextInt(5 - 3) + 3;
+            int weaknessesCount = rend.nextInt(3) + 3;
             List<EntityClass> Opponents = EntityClasses.stream().filter(t -> t.getClassType() != entity.getClassType()).collect(Collectors.toList());
-            for (int i = 0; i < weaknessesCount; i++)
-                entity.setWeakness(Opponents.get(rend.nextInt(Opponents.size())).getClassName());
+            for (int i = 0; i < weaknessesCount; i++) {
+                int weaknessId = 0;
+
+                do {
+                    weaknessId = rend.nextInt(Opponents.size());
+                }while (entity.isWeaknessContains(Opponents.get(weaknessId).getClassName()));
+
+                entity.setWeakness(Opponents.get(weaknessId).getClassName());
+            }
         }
     }
 
@@ -72,6 +81,12 @@ public class ClassManager {
         if (EntityClasses == null) Init();
         List<EntityClass> foundedCollection = EntityClasses.stream().filter(t -> t.getClassType() == entityType).collect(Collectors.toList());
         return foundedCollection.get(randomProvider.nextInt(foundedCollection.size()));
+    }
+
+    public static List<EntityClass> getValid(EEntityType type)
+    {
+        if (EntityClasses == null) Init();
+        return EntityClasses.stream().filter(t->t.getClassType() == type).collect(Collectors.toList());
     }
 
     public static int size() {

@@ -24,6 +24,11 @@ public class EntityClass implements Comparable<EntityClass> {
         return holder.indexOf(this);
     }
 
+    public boolean isWeaknessContains(EEntityNames name)
+    {
+        return Weaknesses.contains(name);
+    }
+
     public void setWeakness(EEntityNames... strongerClass) {
         Weaknesses.addAll(Arrays.asList(strongerClass));
     }
@@ -54,9 +59,9 @@ public class EntityClass implements Comparable<EntityClass> {
 
     @Override
     public int compareTo(EntityClass entityClass) {
-        if(Weaknesses.contains(entityClass))
+        if(Weaknesses.contains(entityClass.ClassName))
             return -1;
-        if(entityClass.Weaknesses.contains(this))
+        if(entityClass.Weaknesses.contains(this.ClassName))
             return 1;
         return 0;
     }

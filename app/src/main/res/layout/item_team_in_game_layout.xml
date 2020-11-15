@@ -12,7 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:minHeight="120dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="30dp"
+            android:layout_height="wrap_content" />
 
         <include layout="@layout/part_hero_base_layout" />
     </LinearLayout>
@@ -31,7 +35,7 @@
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_plus"
+            android:drawableStart="@drawable/ic_tick"
             android:minWidth="1dp"
             android:minHeight="40dp" />
 

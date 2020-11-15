@@ -18,30 +18,41 @@ import com.tectro.mobileapp6.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class TeamInGameAdapter extends RecyclerView.Adapter<TeamInGameAdapter.ViewHolder> implements ICollectionProvider<List<Hero>> {
 
     private final LayoutInflater inflater;
-    private GamePlayer player;
-    List<Hero> heroes;
+    private Consumer<Integer> onClick;
+    private List<Hero> heroes;
+    private boolean isChoiceAccessibilityLocked;
 
-    public TeamInGameAdapter(Context context, GamePlayer player) {
+    public TeamInGameAdapter(Context context, Consumer<Integer> onClick) {
         inflater = LayoutInflater.from(context);
-        this.player = player;
+        this.onClick = onClick;
         heroes = new ArrayList<>();
+        isChoiceAccessibilityLocked = true;
+    }
+
+    public void setChoiceAccessibility(boolean value)
+    {
+        isChoiceAccessibilityLocked = value;
+        for (int i = 0; i < getItemCount(); i++)
+            notifyItemChanged(i);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_team_layout, parent, false);
+        View view = inflater.inflate(R.layout.item_team_in_game_layout, parent, false);
         ViewHolder holder = new ViewHolder(view);
 
         holder.selectHero.setOnClickListener(v ->
         {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
-                player.MakeChoice(pos);
+                onClick.accept(pos);
             }
         });
 
@@ -58,6 +69,8 @@ public class TeamInGameAdapter extends RecyclerView.Adapter<TeamInGameAdapter.Vi
             weaknesses[i] = heroClass.getWeakness(i).name();
 
         holder.HeroWeaknesses.setText(String.join("\n", weaknesses));
+
+        holder.selectHero.setVisibility(isChoiceAccessibilityLocked ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -68,6 +81,7 @@ public class TeamInGameAdapter extends RecyclerView.Adapter<TeamInGameAdapter.Vi
     @Override
     public void setCollection(List<Hero> collection) {
         heroes = collection;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

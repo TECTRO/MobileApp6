@@ -108,6 +108,7 @@ public class GameModel {
         Player.getLockers((lock,unlock)->
         {
             unlock.run();
+            uProvider.Invoke(NotifyNames.ChoiceLockStatus,false);
 
             notifyWhenLooping(
                     elapsedTime -> elapsedTime < GameDifficulty.getPlayerWaitingTime().asNanos(), null,
@@ -131,6 +132,8 @@ public class GameModel {
                         Hero chosen = choice.getChosenHero();
                         chosenPos.set(t.indexOf(chosen));
                         t.remove(chosen);
+                        if(t.size() == 0)
+                            winningState.set(false);
                     });
                     fightResult = EFightResult.HeroLose;
 
@@ -155,6 +158,8 @@ public class GameModel {
                 }
             });
         }
+
+        uProvider.Invoke(NotifyNames.ChoiceLockStatus,true);
 
         notifyWhenLooping(
                 s -> Player.isWaiting(), null,

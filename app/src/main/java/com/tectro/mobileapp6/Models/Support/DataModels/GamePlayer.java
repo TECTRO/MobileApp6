@@ -30,9 +30,9 @@ public class GamePlayer {
     public void getHeroes(ICollectionProvider<List<Hero>> provider) {
         provider.setCollection(Heroes);
     }
-    public void getLockers(BiConsumer<Runnable,Runnable> functor)
-    {
-        functor.accept(this::LockChoice,this::UnlockChoice);
+
+    public void getLockers(BiConsumer<Runnable, Runnable> functor) {
+        functor.accept(this::LockChoice, this::UnlockChoice);
     }
 
     public int getShields() {
@@ -41,9 +41,10 @@ public class GamePlayer {
 
     public void MakeChoice(int heroId) {
         if (canMakeChoice) {
-            if (heroId > 0 && heroId < Heroes.size())
+            if (heroId >= 0 && heroId < Heroes.size()) {
                 chosenSituation = new choice(Heroes.get(heroId), false);
-            isWaiting = true;
+                isWaiting = true;
+            }
         }
     }
 
@@ -52,8 +53,8 @@ public class GamePlayer {
             if (shield && Shields > 0) {
                 chosenSituation = new choice(null, true);
                 Shields--;
+                isWaiting = true;
             }
-            isWaiting = true;
         }
     }
 
@@ -87,10 +88,13 @@ public class GamePlayer {
     private choice chosenSituation;
     private boolean isWaiting = false;
 
-    public void AddHero() {
+    public boolean AddHero() {
         Difficulty difficulty = parent.getGameDifficulty();
-        if (Heroes.size() < difficulty.getMaxHeroes())
+        if (Heroes.size() < difficulty.getMaxHeroes()) {
             Heroes.add(new Hero(ClassManager.getByRandom(rand, EEntityType.Hero), true));
+            return true;
+        }
+        return false;
     }
 
     public void DelHero(int index) {

@@ -8,4 +8,6 @@ public class NotifyNames {
     public static final String TotalElapsedTime = "TotalElapsedTime";
     public static final String winningState = "winningState";
     public static final String FightResult = "FightResult";
+    public static final String ChoiceLockStatus = "ChoiceLockStatus";
+
 }
